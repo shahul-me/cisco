@@ -18,17 +18,22 @@ class UserController extends Controller
 
                 $result = User::where('login_id', $input['login_id'])->first();
                 if ($result) {
-                    $result_data['token'] = $this->generateToken($input['login_id']);
-                    $response = ['code' => 200, 'message' => 'Login Successfully - Use this token for your further API Call', 'token' => $result_data['token']];
+                    if (\Hash::check($request['password'], $result->password)) {
+                        $result_data['token'] = $this->generateToken($input['login_id']);
+                        $response = ['code' => 200, 'message' => 'Login Successfully - Use this token for your further API Call', 'token' => $result_data['token']];
+                    } else {
+                        $response = ['code' => 204, 'message' => 'Invalid Credential', 'data' => ''];
+                    }
                 } else {
                     $response = ['code' => 204, 'message' => 'User not found', 'data' => ''];
                 }
-
             } else {
-                $response = ['code' => 204, 'message' => 'No post data.'];
+                $response = ['code' => 204, 'message' => 'Invalid input data', 'data' => ''];
             }
-            return response($response)->header('Content-Type', 'application/json');
+        } else {
+            $response = ['code' => 204, 'message' => 'equest should be Post'];
         }
+        return response($response)->header('Content-Type', 'application/json');
     }
 
     public function generateToken($login_id)
@@ -36,7 +41,7 @@ class UserController extends Controller
 
         $api_token = Str::random();
         $login_time = date('Y-m-d H:i:s');
-        $data = User::where('login_id', "test1")
+        $data = User::where('login_id', $login_id)
             ->update(['token' => $api_token]);
         return $api_token;
     }

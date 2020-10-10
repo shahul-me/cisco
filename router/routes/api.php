@@ -17,12 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
-Route::get('/login', 'Api\AuthenicationController@login');
 
 Route::POST('/login', 'Api\UserController@login');
 Route::POST('/create', 'Api\RouterController@create');
-Route::get('/get-router', 'Api\RouterController@getrouter');
-Route::get('/get-range', 'Api\RouterController@getrange');
-Route::get('/updatetbyip', 'Api\RouterController@updatetbyip');
-Route::get('/delete', 'Api\RouterController@delete');
+Route::get('/list-ip', 'Api\RouterController@ListByIp');
+Route::POST('/update-ip', 'Api\RouterController@updateByIp');
+Route::get('/list-type', 'Api\RouterController@listByType');
+Route::delete('/delete', 'Api\RouterController@delete');
 
